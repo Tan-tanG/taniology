@@ -1,154 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <title>Taniology</title>
+  <title>Radiology Report Generator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f9fc;
-      padding: 30px;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    h1 {
-      font-size: 2.5em;
-      color: #2c3e50;
-    }
-
-    p {
-      color: #34495e;
-    }
-
-    label,
-    select {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    select {
-      padding: 5px;
-      width: 100%;
-    }
-
-    textarea {
-      width: 100%;
-      height: 200px;
-      margin-top: 20px;
-      padding: 10px;
-      font-size: 1em;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    label, select { display: block; margin-top: 10px; }
+    textarea { width: 100%; height: 200px; margin-top: 20px; }
+    button { margin-top: 20px; padding: 10px 20px; }
   </style>
 </head>
-
 <body>
 
-  <header>
-    <h1>Welcome to Taniology</h1>
-    <p>Quick and structured radiology findings generator</p>
-  </header>
+<h1>Radiology Report Generator</h1>
 
-  <!-- Step 1: Choose Modality and Exam -->
-  <label for="modality">Modality:</label>
-  <select id="modality">
-    <option value="CT">CT</option>
-    <option value="MRI">MRI</option>
+<!-- Step 1: Choose Modality and Exam -->
+<label for="modality">Modality:</label>
+<select id="modality">
+  <option value="CT">CT</option>
+  <option value="MRI">MRI</option>
+</select>
+
+<label for="exam">Examination Type:</label>
+<select id="exam">
+  <option value="CT Abdomen">CT Abdomen</option>
+  <option value="CT Chest">CT Chest</option>
+  <option value="MRI Brain">MRI Brain</option>
+</select>
+
+<!-- Step 2: Findings -->
+<h2>Findings:</h2>
+
+<div id="findings">
+  <!-- Example for CT Abdomen -->
+  <label>Liver:</label>
+  <select class="organ" data-organ="Liver">
+    <option value="Normal">Normal</option>
+    <option value="Lesion">Lesion</option>
+    <option value="Enlarged">Enlarged</option>
   </select>
 
-  <label for="exam">Examination Type:</label>
-  <select id="exam">
-    <option value="CT Abdomen">CT Abdomen</option>
-    <option value="CT Chest">CT Chest</option>
-    <option value="MRI Brain">MRI Brain</option>
+  <label>Gallbladder:</label>
+  <select class="organ" data-organ="Gallbladder">
+    <option value="Normal">Normal</option>
+    <option value="Gallstones">Gallstones</option>
+    <option value="Inflamed">Inflamed</option>
   </select>
+  
+  <label>Pancreas:</label>
+  <select class="organ" data-organ="Pancreas">
+    <option value="Normal">Normal</option>
+    <option value="Mass">Mass</option>
+    <option value="Atrophic">Atrophic</option>
+  </select>
+</div>
 
-  <!-- Step 2: Findings -->
-  <h2>Findings:</h2>
+<!-- Step 3: Generate Report -->
+<button onclick="generateReport()">Generate Report</button>
 
-  <div id="findings">
-    <label>Liver:</label>
-    <select class="organ" data-organ="Liver">
-      <option value="Normal">Normal</option>
-      <option value="Lesion">Lesion</option>
-      <option value="Enlarged">Enlarged</option>
-    </select>
+<textarea id="report" placeholder="Your report will appear here..."></textarea>
 
-    <label>Gallbladder:</label>
-    <select class="organ" data-organ="Gallbladder">
-      <option value="Normal">Normal</option>
-      <option value="Gallstones">Gallstones</option>
-      <option value="Inflamed">Inflamed</option>
-    </select>
+<script>
+function generateReport() {
+  const organs = document.querySelectorAll('.organ');
+  let report = '';
 
-    <label>Pancreas:</label>
-    <select class="organ" data-organ="Pancreas">
-      <option value="Normal">Normal</option>
-      <option value="Mass">Mass</option>
-      <option value="Atrophic">Atrophic</option>
-    </select>
-  </div>
+  organs.forEach(select => {
+    const organ = select.dataset.organ;
+    const finding = select.value;
+    report += `${organ}: ${finding}.\n`;
+  });
 
-  <!-- Step 3: Generate Report -->
-  <button onclick="generateReport()">Generate Report</button>
-
-  <textarea id="report" placeholder="Your report will appear here..."></textarea>
-
-  <script>
-    // Sentences based on finding
-    const findingsTexts = {
-      Liver: {
-        Normal: "The liver is normal in size and appearance, with no focal lesions.",
-        Lesion: "There is a hypodense lesion seen in the liver, suggestive of a cyst.",
-        Enlarged: "The liver is enlarged (hepatomegaly) without focal lesions."
-      },
-      Gallbladder: {
-        Normal: "The gallbladder is unremarkable, with no stones or wall thickening.",
-        Gallstones: "Multiple gallstones are present within the gallbladder.",
-        Inflamed: "The gallbladder wall is thickened, suggestive of cholecystitis."
-      },
-      Pancreas: {
-        Normal: "The pancreas appears normal in size and contour, with no masses.",
-        Mass: "A solid mass is noted in the pancreatic head region.",
-        Atrophic: "The pancreas is atrophic, consistent with chronic pancreatitis."
-      }
-    };
-
-    function generateReport() {
-      const organs = document.querySelectorAll('.organ');
-      let report = '';
-      organs.forEach(select => {
-        const organ = select.dataset.organ;
-        const finding = select.value;
-        const sentence = findingsTexts[organ][finding];
-        report += sentence + '\n';
-      });
-      document.getElementById('report').value = report;
-    }
-  </script>
+  document.getElementById('report').value = report;
+}
+</script>
 
 </body>
-
 </html>
